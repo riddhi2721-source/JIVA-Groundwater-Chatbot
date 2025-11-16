@@ -1,5 +1,5 @@
 flask
 flask-cors
 pandas
-openpyxl
-gunicorn
+openpyxl  # Needed by pandas to read .xlsx files
+gunicorn  # A production-grade WSGI server for deploying Flask

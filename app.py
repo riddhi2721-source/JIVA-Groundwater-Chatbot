@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-import os
+import os # <-- os is used for explicit pathing
 import time
 import re
 import pandas as pd
-import traceback # <-- ADDED for detailed error logging
+import traceback
 
 # Helper function to normalize column names by stripping excess whitespace
 def normalize_column_name(col_name):
@@ -61,8 +61,7 @@ except Exception as e:
     print(f"FATAL ERROR: Could not load data. Ensure required columns exist. Error: {e}")
 
 
-# --- 3. Chatbot Logic Functions ---
-
+# --- 3. Chatbot Logic Functions (No change here) ---
 # A. Simple Methodology FAQs 
 faq_responses = {
     "what is ingres": "INGRES is the India Ground Water Resource Estimation System, a GIS-based platform developed by CGWB and IIT Hyderabad for groundwater assessment.",
@@ -78,7 +77,7 @@ def get_faq_response(query):
             return response
     return None
 
-# B. Data Lookup Function (The core functionality with Summation)
+# B. Data Lookup Function (No change here)
 def get_data_lookup_response(query):
     query_lower = query.lower()
     
@@ -102,7 +101,6 @@ def get_data_lookup_response(query):
 
     if not unit_name:
         # If no state is found, check if the generic response was returned by mistake.
-        # This text is NOT what the frontend was receiving, so this is unlikely to be the main failure mode.
         if "extraction" in query_lower or "percentage" in query_lower or "data" in query_lower:
             return "I can answer data queries, but please specify an **Indian State** and optionally a **Year**."
         
@@ -168,11 +166,21 @@ def get_data_lookup_response(query):
 
 
 # --- 4. Initialize Flask App and CORS ---
-app = Flask(__name__)
+
+# --- START OF MODIFIED SECTION ---
+# Get the absolute path of the directory containing app.py
+BASE_DIR = os.path.abspath(os.path.dirname(__file__)) 
+
+# Initialize Flask, explicitly setting the template and static folder paths
+app = Flask(__name__, 
+            template_folder=os.path.join(BASE_DIR, 'templates'),
+            static_folder=os.path.join(BASE_DIR, 'static'))
+# --- END OF MODIFIED SECTION ---
+
 # Explicitly enable CORS for all domains to allow the static frontend to connect
 CORS(app, resources={r"/*": {"origins": "*"}}) 
 
-# --- 5. Define the main Chat Endpoint (UPDATED WITH TRY/EXCEPT) ---
+# --- 5. Define the main Chat Endpoint (No change here) ---
 @app.route('/chat', methods=['POST'])
 def chat():
     # Simulate a small delay for better UX
@@ -204,6 +212,7 @@ def chat():
 
     # 🚨 CATCH ALL EXCEPTIONS TO RETURN THE PYTHON ERROR 🚨
     except Exception as e:
+        user_query = request.json.get('message', 'N/A')
         error_trace = traceback.format_exc()
         # Log the error on the server
         print(f"FATAL API ERROR (Query: {user_query}): {error_trace}")
@@ -215,11 +224,11 @@ def chat():
         }), 500
 
 
-# --- 6. Define the Home Route (Placeholder) ---
+# --- 6. Define the Home Route (UPDATED TO SERVE FRONTEND) ---
 @app.route('/', methods=['GET'])
 def home():
-    # Show status message
-    return "JIVA Backend is Running! Access the frontend via the static server."
+    # Render the index.html file from the 'templates' folder
+    return render_template('index.html')
 
 
 # --- 7. Run the Server ---

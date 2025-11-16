@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Groundwater Intelligence Project - JIVA</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     
@@ -87,10 +87,9 @@
         const userInput = document.getElementById('user-input');
         const chatBox = document.getElementById('chat-box');
 
-        // ** 🎯 LIVE RENDER API URL - CONFIRMED BY USER **
-        const API_BASE_URL = 'https://jiva-chatbot.onrender.com';
-        const API_ENDPOINT = API_BASE_URL + '/chat'; // Resolves to: https://jiva-chatbot.onrender.com/chat
-
+       // ** 🎯 RELATIVE API URL for deployment in the same Flask app **
+// This calls the /chat endpoint on the same server that served this page.
+            const API_ENDPOINT = '/chat';
         // --- TOGGLE FUNCTIONALITY (NO CHANGE) ---
         function toggleChat(open) {
             const isOpen = open !== undefined ? open : chatContainer.classList.contains('open');
