@@ -35,7 +35,7 @@
             <div class="content-card secondary-card">
                 <h2>📊 Data & Categorization (INGRES)</h2>
                 <p>The India Ground Water Resource Estimation System (INGRES) provides comprehensive data on the availability and usage of groundwater. Analyzing data like the Annual Extractable Resource assesses aquifer health.</p>
-                <p class="sub-text">Use the floating **JIVA Chatbot** to look up aggregated extraction data and categorization status for any Indian State available in the system.</p>
+                <p class="sub-text">Use the JIVA Chatbot to look up aggregated extraction data and categorization status for any Indian State available in the system.</p>
             </div>
         </div>
         
@@ -57,12 +57,11 @@
                     <p>INGRES Data Insights</p>
                 </div>
             </div>
-            <button id="chat-close-button" class="close-btn">✖</button>
         </header>
 
         <div id="chat-box">
             <div class="message bot intro">
-                Hello! I am **JIVA**, your AI assistant for INGRES data. Ask me a question about categorization, extraction, or general INGRES terminology!
+                Hello! I am JIVA, your AI assistant for INGRES data. Ask me a question about categorization, extraction, or general INGRES terminology!
             </div>
         </div>
         
@@ -81,8 +80,11 @@
     <script>
         const chatContainer = document.getElementById('chat-container');
         const chatToggleButton = document.getElementById('chat-toggle-button');
-        const chatCloseButton = document.getElementById('chat-close-button');
         const ctaChatButton = document.getElementById('cta-chat-button');
+        
+        // 🔴 DELETE THIS LINE (It is a Syntax Error):
+        // const chatCloseButton.addEventListener('click', () => toggleChat(false));
+        
         const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
         const chatBox = document.getElementById('chat-box');
@@ -105,7 +107,7 @@
         }
         
         chatToggleButton.addEventListener('click', () => toggleChat());
-        chatCloseButton.addEventListener('click', () => toggleChat(false));
+        // REMOVED: chatCloseButton.addEventListener('click', () => toggleChat(false)); // This caused the fatal error
         ctaChatButton.addEventListener('click', (e) => {
             e.preventDefault();
             toggleChat(true);
