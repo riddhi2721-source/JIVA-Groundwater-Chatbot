@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-import os # <-- os is used for explicit pathing
+import os
 import time
 import re
 import pandas as pd
@@ -13,7 +13,12 @@ def normalize_column_name(col_name):
     return col_name.strip().replace(" ", "")
 
 # --- 1. CONFIGURATION ---
-EXCEL_FILE_PATH = 'INGRES DATABASE.xlsx'
+# Get the absolute path of the directory containing app.py
+# DEFINED HERE FOR CONFIGURATION USE
+BASE_DIR = os.path.abspath(os.path.dirname(__file__)) 
+EXCEL_FILE_NAME = 'INGRES DATABASE.xlsx'
+EXCEL_FILE_PATH = os.path.join(BASE_DIR, EXCEL_FILE_NAME) # <-- CRITICAL FIX: Use absolute path
+
 # Define the specific sheets containing the raw data to be analyzed.
 DATA_SHEET_NAMES = ['2025', '2024', '2023', '2022', '2020'] 
 
@@ -39,7 +44,7 @@ DEFAULT_YEAR = '2025'
 
 try:
     # Load ONLY the specified data sheets, ignoring any new summary/pivot table sheets
-    # We must assume the file is correctly packaged in the deployment environment
+    # Now using the absolute EXCEL_FILE_PATH
     ingres_data_dict_raw = pd.read_excel(EXCEL_FILE_PATH, sheet_name=DATA_SHEET_NAMES)
     
     # Normalize column names in all loaded DataFrames for robustness
@@ -56,7 +61,8 @@ try:
     
     print(f"Data Loaded Successfully. Data Sheets found: {LOADED_YEARS}")
 except FileNotFoundError:
-    print(f"FATAL ERROR: Excel file '{EXCEL_FILE_PATH}' not found. Data processing will fail.")
+    # The printed message now shows the full path it failed to find
+    print(f"FATAL ERROR: Excel file expected at '{EXCEL_FILE_PATH}' not found. Data processing will fail.")
 except Exception as e:
     print(f"FATAL ERROR: Could not load data. Ensure required columns exist. Error: {e}")
 
@@ -167,15 +173,12 @@ def get_data_lookup_response(query):
 
 # --- 4. Initialize Flask App and CORS ---
 
-# --- START OF MODIFIED SECTION ---
-# Get the absolute path of the directory containing app.py
-BASE_DIR = os.path.abspath(os.path.dirname(__file__)) 
+# The BASE_DIR definition was moved up to the configuration section (Section 1)
 
 # Initialize Flask, explicitly setting the template and static folder paths
 app = Flask(__name__, 
             template_folder=os.path.join(BASE_DIR, 'templates'),
             static_folder=os.path.join(BASE_DIR, 'static'))
-# --- END OF MODIFIED SECTION ---
 
 # Explicitly enable CORS for all domains to allow the static frontend to connect
 CORS(app, resources={r"/*": {"origins": "*"}}) 
@@ -188,7 +191,7 @@ def chat():
     
     if not data_loaded:
         # This should only happen if the file was missing on startup
-        return jsonify({"response": "Error: INGRES data failed to load on the server. Check if 'INGRES DATABASE.xlsx' exists."}), 500
+        return jsonify({"response": "Error: INGRES data failed to load on the server. Check if 'INGRES DATABASE.xlsx' exists and is committed."}), 500
 
     try:
         # 1. Parse incoming JSON body
