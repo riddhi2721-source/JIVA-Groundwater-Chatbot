@@ -1,4 +1,3 @@
-/* --- 1. FONTS & BASE STYLES --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
 
 :root {
@@ -565,7 +564,7 @@ body {
 
 .close-button:hover,
 .close-button:focus {
-    color: #007bff;
+    color: var(--color-primary); /* Use primary color on hover */
     text-decoration: none;
     cursor: pointer;
 }
@@ -580,6 +579,7 @@ body {
     background-color: #000;
     border-radius: 4px;
     overflow: hidden; /* Contains the images nicely */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
 
 .mySlides {
@@ -649,7 +649,7 @@ body {
 }
 
 .active, .dot:hover {
-    background-color: #007bff;
+    background-color: var(--color-primary); /* Use primary color for active/hover dot */
 }
 
 /* Fading animation */
@@ -675,3 +675,14 @@ body {
         margin-top: -20px;
     }
 }
+```
+eof
+
+## 🚀 Final Deployment
+
+Once you replace your local `static/style.css` file with the content above, run these commands in your command prompt:
+
+```bash
+git add static/style.css
+git commit -m "Fix: Restored original website styles while retaining new slideshow CSS."
+git push origin main
