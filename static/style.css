@@ -1,3 +1,4 @@
+/* --- 1. FONTS & BASE STYLES --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
 
 :root {
@@ -518,171 +519,159 @@ body {
 }
 
 /* ---------------------------------------------------- */
-/* --- 11. SLIDESHOW MODAL STYLES (New Section) --- */
+/* --- 11. SLIDESHOW MODAL --- */
 /* ---------------------------------------------------- */
 .modal {
-    display: none; /* Hidden by default, shown by JS */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top of everything */
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.85); /* Darker background w/ opacity */
-    padding-top: 50px;
+    display: none; /* Hidden by default, shown by JS */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top of everything */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.85); /* Darker background w/ opacity */
+    padding-top: 50px;
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: auto; /* Centered */
-    padding: 30px;
-    border-radius: 8px;
-    width: 90%; 
-    max-width: 900px;
-    position: relative;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    animation: fadeIn 0.3s;
+    background-color: #fefefe;
+    margin: auto; /* Centered */
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%; 
+    max-width: 900px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s;
 }
 
 @keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
 
 .close-button {
-    color: #333;
-    float: right;
-    font-size: 32px;
-    font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    cursor: pointer;
-    line-height: 1;
+    color: #333;
+    float: right;
+    font-size: 32px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    line-height: 1;
 }
 
 .close-button:hover,
 .close-button:focus {
-    color: var(--color-primary); /* Use primary color on hover */
-    text-decoration: none;
-    cursor: pointer;
+    color: #007bff;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 /* ---------------------------------------------------- */
 /* Slideshow Container */
 /* ---------------------------------------------------- */
 .slideshow-container {
-    max-width: 800px;
-    position: relative;
-    margin: 20px auto;
-    background-color: #000;
-    border-radius: 4px;
-    overflow: hidden; /* Contains the images nicely */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    max-width: 800px;
+    position: relative;
+    margin: 20px auto;
+    background-color: #000;
+    border-radius: 4px;
+    overflow: hidden; /* Contains the images nicely */
 }
 
 .mySlides {
-    display: none;
+    display: none;
 }
 
 .mySlides img {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-height: 500px;
-    object-fit: contain; /* Ensures the whole image is visible */
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 500px;
+    object-fit: contain; /* Ensures the whole image is visible */
 }
 
 .prev, .next {
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    width: auto;
-    padding: 16px;
-    margin-top: -30px;
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
-    transition: 0.6s ease;
-    user-select: none;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 10;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -30px;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    transition: 0.6s ease;
+    user-select: none;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 10;
 }
 
 .next {
-    right: 0;
-    border-radius: 3px 0 0 3px;
+    right: 0;
+    border-radius: 3px 0 0 3px;
 }
 .prev {
-    left: 0;
-    border-radius: 0 3px 3px 0;
+    left: 0;
+    border-radius: 0 3px 3px 0;
 }
 
 
 .prev:hover, .next:hover {
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0,0,0,0.8);
 }
 
 .slide-text {
-    color: #fff;
-    font-size: 14px;
-    padding: 8px 12px;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    text-align: center;
-    background-color: rgba(0,0,0,0.7);
-    z-index: 5;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 5;
 }
 
 /* The dots/bullets/indicators */
 .dot {
-    cursor: pointer;
-    height: 12px;
-    width: 12px;
-    margin: 0 5px;
-    background-color: #bbb;
-    border-radius: 50%;
-    display: inline-block;
-    transition: background-color 0.6s ease;
+    cursor: pointer;
+    height: 12px;
+    width: 12px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
 }
 
 .active, .dot:hover {
-    background-color: var(--color-primary); /* Use primary color for active/hover dot */
+    background-color: #007bff;
 }
 
 /* Fading animation */
 .fade {
-    animation-name: fade;
-    animation-duration: 1.5s;
+    animation-name: fade;
+    animation-duration: 1.5s;
 }
 
 @keyframes fade {
-  from {opacity: .4} 
-  to {opacity: 1}
+  from {opacity: .4} 
+  to {opacity: 1}
 }
 
 /* Media Query for smaller screens */
 @media screen and (max-width: 768px) {
-    .modal-content {
-        padding: 15px;
-        width: 95%;
-    }
-    .prev, .next {
-        font-size: 16px;
-        padding: 10px;
-        margin-top: -20px;
-    }
+    .modal-content {
+        padding: 15px;
+        width: 95%;
+    }
+    .prev, .next {
+        font-size: 16px;
+        padding: 10px;
+        margin-top: -20px;
+    }
 }
-```
-eof
-
-## 🚀 Final Deployment
-
-Once you replace your local `static/style.css` file with the content above, run these commands in your command prompt:
-
-```bash
-git add static/style.css
-git commit -m "Fix: Restored original website styles while retaining new slideshow CSS."
-git push origin main
