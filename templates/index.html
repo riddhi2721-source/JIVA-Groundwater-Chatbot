@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Groundwater Intelligence Project - JIVA</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', _external=True, v='1.1') }}">
 </head>
 <body>
     
@@ -191,8 +191,7 @@
         // --- END SLIDESHOW JAVASCRIPT LOGIC ---
         // ------------------------------------------------------------------
         
-        // 🔴 DELETE THIS LINE (It is a Syntax Error):
-        // const chatCloseButton.addEventListener('click', () => toggleChat(false));
+        // Fix: Removed the potentially error-causing commented lines here.
         
         const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
@@ -216,7 +215,7 @@
         }
         
         chatToggleButton.addEventListener('click', () => toggleChat());
-        // REMOVED: chatCloseButton.addEventListener('click', () => toggleChat(false)); // This caused the fatal error
+        // Fix: Removed the line that attempted to use a REMOVED element, which was labeled as a fatal error.
         ctaChatButton.addEventListener('click', (e) => {
             e.preventDefault();
             toggleChat(true);
