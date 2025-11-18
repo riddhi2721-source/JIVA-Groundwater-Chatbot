@@ -4,8 +4,687 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Groundwater Intelligence Project - JIVA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', _external=True, v='1.1') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+/* --- 1. FONTS & BASE STYLES --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+
+:root {
+    --color-primary: #0d47a1; /* Dark Blue */
+    --color-secondary: #009688; /* Teal */
+    --color-accent-blue: #1e88e5; /* Bright Blue */
+    --color-light-blue: #e3f2fd; /* Light Background Blue */
+    --color-background: #f8fafc; /* Near White Background */
+    --color-text-dark: #333;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-background); 
+    margin: 0;
+    padding: 0;
+    color: var(--color-text-dark);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-bottom: 120px; /* Space for the floating chat button */
+}
+
+/* --- 2. NAVIGATION BAR --- */
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.nav-logo {
+    font-size: 2em;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.nav-subtitle {
+    font-size: 0.5em;
+    font-weight: 400;
+    color: var(--color-secondary);
+    vertical-align: top;
+}
+
+.nav-links a {
+    color: #777;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 15px;
+    margin-left: 15px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+    color: var(--color-primary);
+    border-bottom: 3px solid var(--color-accent-blue);
+}
+
+
+/* --- 3. HERO SECTION --- */
+.hero-section {
+    background: linear-gradient(135deg, var(--color-primary), #1565c0); /* Deeper gradient */
+    color: white;
+    padding: 80px 40px;
+    text-align: center;
+    border-radius: 20px;
+    margin-bottom: 50px;
+    box-shadow: 0 15px 40px rgba(13, 71, 161, 0.3);
+    transition: transform 0.3s;
+}
+.hero-section:hover {
+    transform: translateY(-3px);
+}
+
+.hero-label {
+    font-size: 0.9em;
+    letter-spacing: 2px;
+    font-weight: 600;
+    opacity: 0.7;
+    margin-bottom: 10px;
+}
+
+.hero-section h1 {
+    font-size: 3.5em;
+    font-weight: 800;
+    margin-bottom: 15px;
+    line-height: 1.1;
+}
+
+.hero-section p {
+    font-size: 1.1em;
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto 30px;
+}
+
+/* --- 4. CONTENT CARDS --- */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.content-card {
+    background-color: white;
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+    border-top: 5px solid;
+}
+.content-card:hover {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+}
+
+.primary-card {
+    border-top-color: var(--color-accent-blue);
+}
+
+.secondary-card {
+    border-top-color: var(--color-secondary);
+}
+
+.content-card h2 {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.content-card p {
+    line-height: 1.7;
+    color: #555;
+}
+
+.content-card .sub-text {
+    font-size: 0.9em;
+    color: #777;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+}
+
+/* --- 5. CALL TO ACTION --- */
+.call-to-action {
+    text-align: center;
+    padding: 50px 30px;
+    background-color: var(--color-light-blue);
+    border-radius: 15px;
+    margin-top: 60px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.call-to-action h3 {
+    font-size: 2em;
+    color: var(--color-primary);
+    margin-bottom: 10px;
+}
+
+/* --- 6. BUTTON STYLES --- */
+.cta-button {
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 30px;
+    margin-top: 15px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.primary-cta {
+    background-color: white;
+    color: var(--color-primary);
+}
+.primary-cta:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.secondary-cta {
+    background-color: var(--color-secondary);
+    color: white;
+}
+.secondary-cta:hover {
+    background-color: #00796b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* --- 7. CHAT WIDGET CONTAINER & TOGGLE BUTTON --- */
+
+/* Base container styles (initially hidden/collapsed) */
+#chat-container {
+    position: fixed; 
+    bottom: 90px;
+    right: 30px;
+    
+    width: 90%;
+    max-width: 380px; 
+    height: 500px; /* Default height */
+    max-height: 80vh;
+    
+    background: white;
+    box-shadow: 0 10px 40px rgba(45, 118, 149, 0.4); 
+    border-radius: 15px; 
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    
+    /* Animation for appearing */
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.6);
+    transform-origin: bottom right;
+    transition: all 0.3s ease-in-out;
+    z-index: 999;
+}
+
+#chat-container.open {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+/* Header */
+#chat-container header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); 
+    color: white;
+    padding: 12px 15px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8em;
+    margin-right: 10px;
+}
+
+.title-group h1 {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 0;
+}
+
+.title-group p {
+    font-size: 0.75em;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+.close-btn:hover {
+    opacity: 1;
+}
+
+/* Toggle Button */
+#chat-toggle-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: var(--color-secondary); 
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 150, 136, 0.6);
+    transition: transform 0.3s ease, background 0.3s ease;
+    z-index: 1000;
+}
+#chat-toggle-button:hover {
+    background: #00796b;
+    transform: scale(1.05);
+}
+
+#chat-toggle-button .close-icon { 
+    display: none; 
+    opacity: 0;
+    position: absolute;
+}
+
+#chat-toggle-button.open .chat-icon { 
+    display: none; 
+}
+
+#chat-toggle-button.open .close-icon { 
+    display: block; 
+    opacity: 1;
+}
+
+/* --- 8. CHAT BOX & MESSAGES --- */
+#chat-box {
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: white;
+}
+
+/* Scrollbar styling */
+#chat-box::-webkit-scrollbar {
+    width: 6px;
+}
+#chat-box::-webkit-scrollbar-thumb {
+    background-color: var(--color-accent-blue);
+    border-radius: 3px;
+}
+#chat-box::-webkit-scrollbar-track {
+    background: var(--color-light-blue);
+}
+
+.message {
+    padding: 12px 18px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    max-width: 85%;
+    word-wrap: break-word;
+    line-height: 1.5;
+    font-size: 0.95em;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.message strong {
+    font-weight: 700;
+    color: var(--color-primary); /* Dark text for emphasis */
+}
+
+/* USER Message Styling */
+.user {
+    background-color: var(--color-accent-blue);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px; /* Slight corner for modern look */
+}
+
+/* BOT Message Styling */
+.bot {
+    background-color: var(--color-light-blue);
+    color: var(--color-text-dark);
+    margin-right: auto;
+    border-bottom-left-radius: 4px; /* Slight corner for modern look */
+}
+
+/* Intro Message - Highlighted block */
+.bot.intro {
+    background-color: #bbdefb;
+    border-left: 5px solid var(--color-primary);
+    padding-left: 20px;
+    font-style: normal;
+    font-weight: 400;
+    color: var(--color-primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+.bot.intro strong {
+    color: var(--color-primary);
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    background-color: #e0e7ff; /* Lighter blue for indicator */
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 18px;
+    border-radius: 15px;
+    font-size: 1.5em;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+}
+
+.typing-dot {
+    opacity: 0;
+    animation: blink 1s infinite;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+
+/* --- 9. INPUT FORM --- */
+#chat-form {
+    display: flex;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #cfd8dc;
+}
+
+#user-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid #cfd8dc;
+    border-radius: 8px;
+    margin-right: 10px;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#user-input:focus {
+    border-color: var(--color-accent-blue);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.15);
+}
+
+#chat-form button {
+    background-color: var(--color-accent-blue);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(30, 136, 229, 0.3); 
+    align-self: center;
+}
+
+#chat-form button:hover {
+    background-color: #1565c0;
+    box-shadow: 0 6px 10px rgba(30, 136, 229, 0.4);
+}
+
+#chat-form button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(30, 136, 229, 0.3);
+}
+
+/* --- 10. RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 50px 20px;
+        margin-bottom: 40px;
+    }
+
+    .hero-section h1 {
+        font-size: 2.5em;
+    }
+
+    .nav-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        margin-top: 10px;
+    }
+
+    .content-card {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    #chat-container {
+        right: 15px;
+        bottom: 75px;
+        max-width: 95%;
+        height: 70vh;
+    }
+
+    #chat-toggle-button {
+        bottom: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* ---------------------------------------------------- */
+/* --- 11. SLIDESHOW MODAL --- */
+/* ---------------------------------------------------- */
+.modal {
+    display: none; /* Hidden by default, shown by JS */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top of everything */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.85); /* Darker background w/ opacity */
+    padding-top: 50px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto; /* Centered */
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%; 
+    max-width: 900px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.close-button {
+    color: #333;
+    float: right;
+    font-size: 32px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #007bff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* ---------------------------------------------------- */
+/* Slideshow Container */
+/* ---------------------------------------------------- */
+.slideshow-container {
+    max-width: 800px;
+    position: relative;
+    margin: 20px auto;
+    background-color: #000;
+    border-radius: 4px;
+    overflow: hidden; /* Contains the images nicely */
+}
+
+.mySlides {
+    display: none;
+}
+
+.mySlides img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 500px;
+    object-fit: contain; /* Ensures the whole image is visible */
+}
+
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -30px;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    transition: 0.6s ease;
+    user-select: none;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+.prev {
+    left: 0;
+    border-radius: 0 3px 3px 0;
+}
+
+
+.prev:hover, .next:hover {
+    background-color: rgba(0,0,0,0.8);
+}
+
+.slide-text {
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 5;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+    cursor: pointer;
+    height: 12px;
+    width: 12px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+    background-color: #007bff;
+}
+
+/* Fading animation */
+.fade {
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+/* Media Query for smaller screens */
+@media screen and (max-width: 768px) {
+    .modal-content {
+        padding: 15px;
+        width: 95%;
+    }
+    .prev, .next {
+        font-size: 16px;
+        padding: 10px;
+        margin-top: -20px;
+    }
+}
+    </style>
 </head>
 <body>
     
@@ -57,28 +736,33 @@
                 
                 <div class="mySlides fade">
                     <div class="slide-text">Groundwater Status: Assessment Year 2025</div>
-                    <img src="{{ url_for('static', filename='2025.jpg') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                    <!-- Placeholder image added with onerror fallback -->
+                    <img src="2025.jpg" alt="Groundwater Status 2025" style="width:100%" onerror="this.onerror=null; this.src='https://placehold.co/800x400/90CAF9/0D47A1?text=2025+Data+Unavailable';">
                 </div>
                 
                 <div class="mySlides fade">
                     <div class="slide-text">Groundwater Status: Assessment Year 2024</div>
-                    <img src="{{ url_for('static', filename='2024.jpg') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                    <!-- Placeholder image added with onerror fallback -->
+                    <img src="2024.jpg" alt="Groundwater Status 2024" style="width:100%" onerror="this.onerror=null; this.src='https://placehold.co/800x400/90CAF9/0D47A1?text=2024+Data+Unavailable';">
                 </div>
 
                 <div class="mySlides fade">
                     <div class="slide-text">Groundwater Status: Assessment Year 2023</div>
-                    <img src="{{ url_for('static', filename='2023.jpg') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                    <!-- Placeholder image added with onerror fallback -->
+                    <img src="2023.jpg" alt="Groundwater Status 2023" style="width:100%" onerror="this.onerror=null; this.src='https://placehold.co/800x400/90CAF9/0D47A1?text=2023+Data+Unavailable';">
                 </div>
 
                 
                 <div class="mySlides fade">
                     <div class="slide-text">Groundwater Status: Assessment Year 2022</div>
-                    <img src="{{ url_for('static', filename='2022.jpg') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                    <!-- Placeholder image added with onerror fallback -->
+                    <img src="2022.jpg" alt="Groundwater Status 2022" style="width:100%" onerror="this.onerror=null; this.src='https://placehold.co/800x400/90CAF9/0D47A1?text=2022+Data+Unavailable';">
                 </div>
 
                 <div class="mySlides fade">
                     <div class="slide-text">Groundwater Status: Assessment Year 2020</div>
-                    <img src="{{ url_for('static', filename='2020.jpg') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                    <!-- Placeholder image added with onerror fallback -->
+                    <img src="2020.jpg" alt="Groundwater Status 2020" style="width:100%" onerror="this.onerror=null; this.src='https://placehold.co/800x400/90CAF9/0D47A1?text=2020+Data+Unavailable';">
                 </div>
                 
                 <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
@@ -95,6 +779,7 @@
             </div>
         </div>
     </div>
+    
     <div id="chat-container">
         <header>
             <div class="header-content">
@@ -125,6 +810,9 @@
 
 
     <script>
+        // Note: The /chat endpoint simulation is kept here, but it requires a backend server (like Flask) 
+        // to actually return a response, which is why the dashboard was temporarily replaced.
+
         const chatContainer = document.getElementById('chat-container');
         const chatToggleButton = document.getElementById('chat-toggle-button');
         const ctaChatButton = document.getElementById('cta-chat-button');
@@ -146,7 +834,7 @@
             
             if (slides.length === 0) return; 
             
-            if (n > slides.length) {slideIndex = 1}    
+            if (n > slides.length) {slideIndex = 1}   
             if (n < 1) {slideIndex = slides.length}
             
             for (i = 0; i < slides.length; i++) {
@@ -187,19 +875,25 @@
                 slideshowModal.style.display = "none";
             }
         });
+
+        // Ensure slides are initialized on load (necessary if modal isn't opened immediately)
+        // If the window is ready, show the first slide.
+        window.onload = function() {
+            if (document.getElementsByClassName("mySlides").length > 0) {
+                 showSlides(slideIndex);
+            }
+        }
         // ------------------------------------------------------------------
         // --- END SLIDESHOW JAVASCRIPT LOGIC ---
         // ------------------------------------------------------------------
-        
-        // Fix: Removed the potentially error-causing commented lines here.
         
         const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
         const chatBox = document.getElementById('chat-box');
 
        // ** 🎯 RELATIVE API URL for deployment in the same Flask app **
-// This calls the /chat endpoint on the same server that served this page.
-            const API_ENDPOINT = '/chat';
+        const API_ENDPOINT = '/chat';
+        
         // --- TOGGLE FUNCTIONALITY (NO CHANGE) ---
         function toggleChat(open) {
             const isOpen = open !== undefined ? open : chatContainer.classList.contains('open');
@@ -215,7 +909,7 @@
         }
         
         chatToggleButton.addEventListener('click', () => toggleChat());
-        // Fix: Removed the line that attempted to use a REMOVED element, which was labeled as a fatal error.
+        
         ctaChatButton.addEventListener('click', (e) => {
             e.preventDefault();
             toggleChat(true);
@@ -271,7 +965,12 @@
                     console.error("Backend Traceback:", data.details);
                     appendMessage(`⚠️ ${botResponse} (See console for Traceback details)`, 'bot');
                 } else {
-                    appendMessage(botResponse, 'bot');
+                    // For the original design, if the API is mocked, we display a fallback
+                    if (data.response === undefined && data.details === undefined) {
+                        appendMessage(`[MOCK RESPONSE] I don't have a live API connection right now, but I would look up data for "${userMessage}" in the INGRES database.`, 'bot');
+                    } else {
+                        appendMessage(botResponse, 'bot');
+                    }
                 }
             })
             .catch(error => {
