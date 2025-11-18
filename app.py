@@ -6,6 +6,13 @@ import re
 import pandas as pd
 import traceback
 
+# Initialize Flask, explicitly defining static and template folders
+app = Flask(__name__,
+            static_folder='static',
+            template_folder='templates')
+
+# ... rest of your code ...
+
 # Helper function to normalize column names by stripping excess whitespace
 def normalize_column_name(col_name):
     """Removes all internal whitespace from a string for robust column matching."""
