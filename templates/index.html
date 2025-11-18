@@ -14,7 +14,7 @@
             <div class="nav-logo">JIVA <span class="nav-subtitle">Intelligence</span></div>
             <div class="nav-links">
                 <a href="#" class="active">Dashboard</a>
-                <a href="#">Resources</a>
+                <a href="https://ingres.iith.ac.in/home" target="_blank">Resources</a>
             </div>
         </nav>
         
@@ -22,7 +22,7 @@
             <p class="hero-label">JAL INTELLIGENCE VIRTUAL ASSISTANT (JIVA) PROJECT</p>
             <h1>Sustainable Water Management</h1>
             <p>Leveraging the INGRES database to visualize India's critical groundwater resources and inform policy decisions.</p>
-            <a href="#" class="cta-button primary-cta">Dive into Data</a>
+            <a href="#" id="open-slideshow-cta" class="cta-button primary-cta">Dive into Data</a>
         </div>
 
         <div class="content-grid">
@@ -47,7 +47,53 @@
 
     </div>
 
+    <div id="slideshow-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-slideshow-button">&times;</span>
+            <h2>Groundwater Resource Trends (Sample Data)</h2>
+            <p>Visualizing the change in groundwater status across different assessment years.</p>
+            
+            <div class="slideshow-container">
+                
+                <div class="mySlides fade">
+                    <div class="slide-text">Groundwater Status: Assessment Year 2025</div>
+                    <img src="{{ url_for('static', filename='2025.jpg') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                </div>
+                
+                <div class="mySlides fade">
+                    <div class="slide-text">Groundwater Status: Assessment Year 2024</div>
+                    <img src="{{ url_for('static', filename='2024.jpg') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                </div>
 
+                <div class="mySlides fade">
+                    <div class="slide-text">Groundwater Status: Assessment Year 2023</div>
+                    <img src="{{ url_for('static', filename='2023.jpd') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                </div>
+                
+                <div class="mySlides fade">
+                    <div class="slide-text">Groundwater Status: Assessment Year 2022</div>
+                    <img src="{{ url_for('static', filename='2022.jpg') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                </div>
+
+                <div class="mySlides fade">
+                    <div class="slide-text">Groundwater Status: Assessment Year 2020</div>
+                    <img src="{{ url_for('static', filename='2020.jpg') }}" alt="Annual Extraction Trend Graph" style="width:100%">
+                </div>
+                
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+            <br>
+            
+            <div style="text-align:center">
+              <span class="dot" onclick="currentSlide(1)"></span>
+              <span class="dot" onclick="currentSlide(2)"></span>
+              <span class="dot" onclick="currentSlide(3)"></span>
+              <span class="dot" onclick="currentSlide(4)"></span>
+              <span class="dot" onclick="currentSlide(5)"></span>
+            </div>
+        </div>
+    </div>
     <div id="chat-container">
         <header>
             <div class="header-content">
@@ -81,6 +127,68 @@
         const chatContainer = document.getElementById('chat-container');
         const chatToggleButton = document.getElementById('chat-toggle-button');
         const ctaChatButton = document.getElementById('cta-chat-button');
+        
+        // ------------------------------------------------------------------
+        // --- START SLIDESHOW JAVASCRIPT LOGIC ---
+        // ------------------------------------------------------------------
+        const slideshowModal = document.getElementById('slideshow-modal');
+        const openSlideshowCta = document.getElementById('open-slideshow-cta');
+        const closeSlideshowButton = document.getElementById('close-slideshow-button');
+        
+        let slideIndex = 1;
+
+        // Function to show the current slide (called by navigation buttons/dots)
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            let dots = document.getElementsByClassName("dot");
+            
+            if (slides.length === 0) return; 
+            
+            if (n > slides.length) {slideIndex = 1}    
+            if (n < 1) {slideIndex = slides.length}
+            
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";  
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            
+            slides[slideIndex-1].style.display = "block";  
+            dots[slideIndex-1].className += " active";
+        }
+
+        // Next/previous controls (manual click)
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        // Thumbnail image controls (dot click)
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        // Event listeners to open and close the modal
+        openSlideshowCta.addEventListener('click', (e) => {
+            e.preventDefault();
+            slideshowModal.style.display = "block";
+            showSlides(slideIndex); // Initialize the slides
+        });
+
+        closeSlideshowButton.addEventListener('click', () => {
+            slideshowModal.style.display = "none";
+        });
+
+        // Close when clicking outside the modal
+        window.addEventListener('click', (event) => {
+            if (event.target == slideshowModal) {
+                slideshowModal.style.display = "none";
+            }
+        });
+        // ------------------------------------------------------------------
+        // --- END SLIDESHOW JAVASCRIPT LOGIC ---
+        // ------------------------------------------------------------------
         
         // 🔴 DELETE THIS LINE (It is a Syntax Error):
         // const chatCloseButton.addEventListener('click', () => toggleChat(false));
