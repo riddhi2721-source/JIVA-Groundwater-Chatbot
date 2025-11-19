@@ -31,16 +31,17 @@ DATA_SHEET_NAMES = ['2025', '2024', '2023', '2022', '2020']
 
 # Define the RAW column names, and then create their normalized versions for use in code.
 # IMPORTANT: These must EXACTLY match the header names in your Excel sheets.
-COL_UNIT_RAW = 'State' 
+COL_STATE_RAW = 'State'  # <-- RENAMED from COL_UNIT_RAW for clarity
+COL_DISTRICT_RAW = 'District' # <-- NEW: Column name for District/Assessment Unit
 COL_CATEGORY_RAW = 'Categorization (OE/Critical/Semicritical/Safe)'
 COL_EXTRACTION_RAW = 'Annual Extractable Ground Water Resource (Ham)'
 COL_PERCENTAGE_RAW = 'Percentage' 
 
-COL_UNIT_NORM = normalize_column_name(COL_UNIT_RAW)
+COL_STATE_NORM = normalize_column_name(COL_STATE_RAW) # <-- RENAMED from COL_UNIT_NORM
+COL_DISTRICT_NORM = normalize_column_name(COL_DISTRICT_RAW) # <-- NEW
 COL_CATEGORY_NORM = normalize_column_name(COL_CATEGORY_RAW)
 COL_EXTRACTION_NORM = normalize_column_name(COL_EXTRACTION_RAW)
 COL_PERCENTAGE_NORM = normalize_column_name(COL_PERCENTAGE_RAW)
-
 
 # --- 2. Load Data ---
 ingres_data_dict = {}
@@ -91,6 +92,7 @@ def get_faq_response(query):
     return None
 
 # B. Data Lookup Function (No change here)
+# B. Data Lookup Function (UPDATED FOR DISTRICT SUPPORT)
 def get_data_lookup_response(query):
     query_lower = query.lower()
     
@@ -104,38 +106,73 @@ def get_data_lookup_response(query):
 
     target_df = ingres_data_dict[target_year]
     
-    # --- ii. Extract State Name ---
-    known_units = ["ANDAMAN AND NICOBAR ISLANDS" , "ANDHRA PRADESH" , "ARUNACHAL PRADESH" , "ASSAM" , "BIHAR" , "CHANDIGARH" , "CHHATTISGARH" , "DADRA AND NAGAR HAVELI" , "DAMAN AND DIU", "DELHI", "GOA", "GUJARAT" , "HARYANA" , "HIMACHAL PRADESH", "JAMMU AND KASHMIR" , "JHARKHAND" , "KARNATAKA" , "KERALA" , "LADAKH", "LAKSHDWEEP" , "MADHYA PRADESH", "MAHARASHTRA" , "MANIPUR", " MEGHALAYA " , "MIZORAM", "NAGALAND", "ODISHA" , "PUDUCHERRY" , "PUNJAB" ,"RAJASTHAN" , "SIKKIM", "TAMILNADU", "TELANGANA" , "TRIPURA" , "UTTAR PRADESH" , "UTTARAKHAND" , "WEST BENGAL", 'UP', 'MP', 'AP', 'TS' 
-    ]
+    # --- ii. Determine Query Type (District or State) ---
     
-    # Find the longest matching state name
-    unit_name = next((unit for unit in sorted(known_units, key=len, reverse=True) if unit.lower() in query_lower), None)
+    unit_name = None
+    search_column_norm = None
+    is_state_query = False
+    
+    # A. Check for District/Unit Match First (Prioritize specific units over broad states)
+    if COL_DISTRICT_NORM in target_df.columns:
+        # Dynamically get all unique district names from the current year's data
+        all_districts = target_df[COL_DISTRICT_NORM].astype(str).str.strip().unique()
+        
+        # Find the longest matching district name in the query for better precision
+        unit_name = next((d for d in sorted(all_districts, key=len, reverse=True) if d.lower() in query_lower), None)
+        
+        if unit_name:
+            search_column_norm = COL_DISTRICT_NORM
+            is_state_query = False # It's a district/unit lookup
+            
+    # B. Check for State Match (Fallback to existing state logic)
+    if not unit_name:
+        # Use the hardcoded list of known state names
+        known_states = ["ANDAMAN AND NICOBAR ISLANDS" , "ANDHRA PRADESH" , "ARUNACHAL PRADESH" , "ASSAM" , "BIHAR" , "CHANDIGARH" , "CHHATTISGARH" , "DADRA AND NAGAR HAVELI" , "DAMAN AND DIU", "DELHI", "GOA", "GUJARAT" , "HARYANA" , "HIMACHAL PRADESH", "JAMMU AND KASHMIR" , "JHARKHAND" , "KARNATAKA" , "KERALA" , "LADAKH", "LAKSHDWEEP" , "MADHYA PRADESH", "MAHARASHTRA" , "MANIPUR", " MEGHALAYA " , "MIZORAM", "NAGALAND", "ODISHA" , "PUDUCHERRY" , "PUNJAB" ,"RAJASTHAN" , "SIKKIM", "TAMILNADU", "TELANGANA" , "TRIPURA" , "UTTAR PRADESH" , "UTTARAKHAND" , "WEST BENGAL", 'UP', 'MP', 'AP', 'TS' 
+        ]
+        
+        # Find the longest matching state name
+        unit_name = next((state for state in sorted(known_states, key=len, reverse=True) if state.lower() in query_lower), None)
+        
+        if unit_name:
+            search_column_norm = COL_STATE_NORM
+            is_state_query = True # It's a state lookup
 
 
     if not unit_name:
-        # If no state is found, check if the generic response was returned by mistake.
+        # If neither State nor District is found, return the fallback message
         if "extraction" in query_lower or "percentage" in query_lower or "data" in query_lower:
-            return "I can answer data queries, but please specify an **Indian State** and optionally a **Year**."
+            return "I can answer data queries, but please specify an **Indian State or District** and optionally a **Year**."
         
-        # If the query is completely unknown, this is the final fallback for data lookup failure
-        return "I can only provide data on State-level groundwater categorization and general INGRES terminology. Please specify an Indian State."
+        # Final fallback
+        return "I can only provide data on State or District-level groundwater categorization and general INGRES terminology. Please specify an Indian State or District."
 
-
+    
     # --- iii. Perform the Lookup and AGGREGATION ---
     
-    # 1. Filter the entire DataFrame for the State (case-insensitive)
-    state_data = target_df[target_df[COL_UNIT_NORM].astype(str).str.contains(unit_name, case=False, na=False)]
+    # 1. Filter the entire DataFrame for the State or District
+    # Using a regex word boundary (\b) ensures precise matching for units like 'UP' or 'Mon'
+    unit_data = target_df[target_df[search_column_norm].astype(str).str.contains(r'\b'+re.escape(unit_name)+r'\b', case=False, na=False, regex=True)]
     
-    if state_data.empty:
-        return f"I could not find the State '{unit_name.title()}' in the {target_year} sheet. Please check the spelling."
+    if unit_data.empty:
+        return f"I could not find the unit '{unit_name.title()}' in the {target_year} sheet. Please check the spelling."
 
-    # 2. Extraction Calculation
-    extraction_series = state_data.get(COL_EXTRACTION_NORM)
+    # 2. Find Parent State (CRITICAL STEP for District lookups)
+    parent_state = ""
+    # Only execute if a District/Unit was queried AND the State column exists
+    if not is_state_query and COL_STATE_NORM in target_df.columns:
+        # Find the state name associated with the first row of the district data
+        # Using .iloc[0] is safe since all rows in unit_data belong to the same district/unit, 
+        # which in turn belongs to the same state.
+        parent_state_raw = unit_data[COL_STATE_NORM].iloc[0]
+        parent_state = f" (in {parent_state_raw.title()})"
+        
+    
+    # 3. Extraction Calculation
+    extraction_series = unit_data.get(COL_EXTRACTION_NORM)
     
     if extraction_series is None:
-        total_extraction_str = f"Column Not Found (Expected: {COL_EXTRACTION_RAW})"
+        total_extraction_str = f"Extraction Column Not Found (Expected: {COL_EXTRACTION_RAW})"
     else:
-        # Note: If this line fails due to bad data format, the outer try/except will catch it.
         numeric_extraction = pd.to_numeric(extraction_series, errors='coerce')
         total_extraction = numeric_extraction.sum()
         
@@ -144,15 +181,14 @@ def get_data_lookup_response(query):
         else:
             total_extraction_str = f"{total_extraction:,.2f}"
             
-    # 3. Percentage Calculation
-    percentage_series = state_data.get(COL_PERCENTAGE_NORM)
+    # 4. Percentage Calculation
+    percentage_series = unit_data.get(COL_PERCENTAGE_NORM)
     
     if percentage_series is None:
         avg_percentage_str = f"Percentage Column Not Found (Expected: {COL_PERCENTAGE_RAW})"
     else:
-        # Note: If this line fails due to bad data format, the outer try/except will catch it.
         numeric_percentage = pd.to_numeric(percentage_series, errors='coerce')
-        # We average the percentage column for all units in the state
+        # We average the percentage column for all units in the state/district
         avg_percentage = numeric_percentage.mean() 
         
         if pd.isna(avg_percentage):
@@ -161,22 +197,25 @@ def get_data_lookup_response(query):
             # Format the percentage clearly 
             avg_percentage_str = f"{avg_percentage * 100:.2f}%"
             
-    # 4. Determine overall status 
-    statuses = state_data.get(COL_CATEGORY_NORM).dropna().astype(str).unique()
+    # 5. Determine overall status 
+    statuses = unit_data.get(COL_CATEGORY_NORM).dropna().astype(str).unique()
     severity_order = ['Over Exploited', 'Critical', 'Semi Critical', 'Safe'] 
     
     overall_status = next((s for s in severity_order if any(s.lower() in status.lower() for status in statuses)), 'Mixed/Uncategorized')
     
-    # --- iv. Format the Response (Including the new percentage data) ---
+    # --- iv. Format the Response ---
+    
+    # Determine the response title based on whether it's a State or District query
+    unit_type = "District/Unit Summary" if not is_state_query else "State Summary"
+    
     response = (
-        f"**INGRES State Summary for {unit_name.title()} ({target_year}):**\n"
+        f"**INGRES {unit_type} for {unit_name.title()}{parent_state} ({target_year}):**\n"
         f"• **Most Severe Groundwater Status:** {overall_status}\n"
         f"• **Average Extraction Percentage:** {avg_percentage_str}\n"
         f"• **TOTAL Annual Extractable Resource (Ham):** {total_extraction_str}\n"
-        f"(Aggregated from {len(state_data)} assessment units.)"
+        f"(Aggregated from {len(unit_data)} assessment units.)"
     )
     return response
-
 
 # --- 4. Initialize Flask App and CORS ---
 
